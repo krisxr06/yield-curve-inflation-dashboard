@@ -14,7 +14,7 @@ implies for fixed-income risk.
 | Section | Content |
 |---------|---------|
 | **1 — Current Macro Snapshot** | Metric cards (CPI YoY, Fed Funds, 2Y, 10Y, spread, regimes) + plain-English summary |
-| **2 — Yield Curve History** | 10Y–2Y spread time series with colour-coded regime shading |
+| **2 — Yield Curve History** | 10Y–2Y spread time series with color-coded regime shading |
 | **3 — Inflation History** | YoY CPI time series with inflation level shading |
 | **4 — Regime Interaction** | Heatmap of historical month counts, summary table, interpretation |
 
