@@ -34,8 +34,7 @@ from src.utils       import (
 
 # ── Page config ────────────────────────────────────────────────────────────────
 st.set_page_config(
-    page_title="Yield Curve × Inflation Dashboard",
-    page_icon="📈",
+    page_title="Yield Curve & Inflation Regimes",
     layout="wide",
     initial_sidebar_state="collapsed",
 )
@@ -91,7 +90,8 @@ current_inf = vals["inf_regime"]
 
 
 # ── Header ─────────────────────────────────────────────────────────────────────
-st.title("📈 Yield Curve × Inflation Regime Dashboard")
+st.title("Yield Curve & Inflation Regimes")
+st.markdown("##### Historical Co-occurrence and Current Positioning")
 try:
     date_str = vals["date"].strftime("%B %Y")
 except Exception:
