@@ -181,3 +181,104 @@ def heatmap_interpretation(df: pd.DataFrame, current_yc: str, current_inf: str) 
     ]
 
     return "  \n".join(lines)
+
+
+# ── Section 5: Yield Curve → Portfolio Interpretation ────────────────────────
+
+def get_yield_curve_interpretation(yc_regime: str, inf_regime: str) -> dict:
+    """
+    Translate the current yield curve and inflation regime into descriptive
+    portfolio risk labels and positioning context.
+
+    This is NOT a trading signal or investment recommendation.
+    All outputs are rule-based interpretations of historical regime patterns.
+
+    Parameters
+    ----------
+    yc_regime  : e.g. "Normal", "Flat", "Inverted", "Re-steepening"
+    inf_regime : e.g. "Moderate / Falling" — only the level prefix is used
+                 for inflation pressure labeling
+
+    Returns a dict with keys:
+        policy_environment, rate_stability, inflation_pressure,
+        duration_risk, carry, curve_trades, bullets
+    """
+    # ── Interpretation labels ─────────────────────────────────────────────────
+    policy_map = {
+        "Normal":        "Expansionary",
+        "Flat":          "Late-cycle / Transition",
+        "Inverted":      "Restrictive / Late-cycle",
+        "Re-steepening": "Policy shift / Transition",
+    }
+
+    stability_map = {
+        "Normal":        "Stable",
+        "Flat":          "Moderate uncertainty",
+        "Inverted":      "Unstable",
+        "Re-steepening": "Highly unstable",
+    }
+
+    # Extract inflation level ("High", "Moderate", "Low") from full regime string
+    inf_level = inf_regime.split(" / ")[0] if " / " in inf_regime else inf_regime
+    pressure_map = {
+        "High":     "Elevated",
+        "Moderate": "Persistent",
+        "Low":      "Contained",
+    }
+
+    # ── Portfolio lens labels ─────────────────────────────────────────────────
+    duration_map = {
+        "Normal":        "Moderate",
+        "Flat":          "Moderate",
+        "Inverted":      "Elevated",
+        "Re-steepening": "High",
+    }
+
+    carry_map = {
+        "Normal":        "Supportive",
+        "Flat":          "Neutral",
+        "Inverted":      "Weak",
+        "Re-steepening": "Weak",
+    }
+
+    curve_trades_map = {
+        "Normal":        "Attractive",
+        "Flat":          "Limited",
+        "Inverted":      "Unclear",
+        "Re-steepening": "Unstable",
+    }
+
+    # ── Positioning implication bullets ──────────────────────────────────────
+    # Observational language only — not trade recommendations.
+    bullets_map = {
+        "Normal": [
+            "Historically associated with lower macro stress relative to inversion or transition regimes.",
+            "Duration positioning has tended to be more stable when the curve maintains a normal slope.",
+            "Carry advantages are generally more accessible in this environment relative to flat or inverted regimes.",
+        ],
+        "Flat": [
+            "Flat curves have historically reduced carry advantages across maturities.",
+            "Positioning tends to depend more on macro shifts than curve shape alone.",
+            "Transition risk increases if policy expectations shift.",
+        ],
+        "Inverted": [
+            "Historically associated with elevated policy uncertainty and compressed term premium.",
+            "Duration outcomes have been less predictable than the curve shape alone might suggest.",
+            "Carry conditions have historically been weak relative to normal or flat regimes.",
+        ],
+        "Re-steepening": [
+            "Historically the most volatile transition environment in the sample.",
+            "Curve positioning has tended to be less reliable as rate repricing occurs unevenly.",
+            "Optionality has typically become more relevant during these episodes.",
+        ],
+    }
+
+    return {
+        "policy_environment": policy_map.get(yc_regime, "Unknown"),
+        "rate_stability":     stability_map.get(yc_regime, "Unknown"),
+        "inflation_pressure": pressure_map.get(inf_level, "Unknown"),
+        "duration_risk":      duration_map.get(yc_regime, "N/A"),
+        "carry":              carry_map.get(yc_regime, "N/A"),
+        "curve_trades":       curve_trades_map.get(yc_regime, "N/A"),
+        "bullets":            bullets_map.get(yc_regime, ["Insufficient regime history for positioning context."]),
+    }

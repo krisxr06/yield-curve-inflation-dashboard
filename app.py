@@ -30,6 +30,7 @@ from src.utils       import (
     yc_chart_explanation,
     inf_chart_explanation,
     heatmap_interpretation,
+    get_yield_curve_interpretation,
 )
 
 # ── Page config ────────────────────────────────────────────────────────────────
@@ -221,6 +222,66 @@ if not valid_df.empty:
 # ── Plain-English interpretation ───────────────────────────────────────────────
 st.write("")
 st.markdown(heatmap_interpretation(df, current_yc, current_inf))
+
+st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
+
+
+# ══════════════════════════════════════════════════════════════════════════════
+# SECTION 5 — Yield Curve → Portfolio Interpretation
+# ══════════════════════════════════════════════════════════════════════════════
+st.subheader("5 — Yield Curve → Portfolio Interpretation")
+st.markdown(
+    "This section translates the current yield curve and inflation regime into "
+    "historically observed portfolio risk characteristics."
+)
+st.markdown(
+    "<div class='explanation' style='font-style:italic;'>"
+    "⚠ Descriptive interpretation based on historical patterns — not a forecast or investment advice."
+    "</div>",
+    unsafe_allow_html=True,
+)
+st.write("")
+
+interp = get_yield_curve_interpretation(current_yc, current_inf)
+
+# Block A: Current state
+st.markdown(
+    f"**Yield Curve Regime:** &nbsp;<span class='badge {_badge_class}'>{current_yc}</span>"
+    f"&nbsp;&nbsp;&nbsp;"
+    f"**Inflation Regime:** &nbsp;<span style='font-size:15px; font-weight:600; color:#e8eaf0;'>{current_inf}</span>",
+    unsafe_allow_html=True,
+)
+st.write("")
+
+# Block B: Interpretation labels
+st.markdown("**Interpretation**")
+i1, i2, i3 = st.columns(3)
+i1.metric("Policy Environment",  interp["policy_environment"])
+i2.metric("Rate Stability",      interp["rate_stability"])
+i3.metric("Inflation Pressure",  interp["inflation_pressure"])
+st.write("")
+
+# Block C: Portfolio lens
+st.markdown("**Portfolio Lens**")
+p1, p2, p3 = st.columns(3)
+p1.metric("Duration Risk", interp["duration_risk"])
+p2.metric("Carry",         interp["carry"])
+p3.metric("Curve Trades",  interp["curve_trades"])
+st.write("")
+
+# Block D: Positioning implications
+st.markdown("**Implications**")
+for bullet in interp["bullets"]:
+    st.markdown(f"- {bullet}")
+
+st.markdown(
+    "<div class='explanation'>"
+    "Labels derived from historical regime patterns. "
+    "This framework is descriptive rather than predictive — intended to contextualize "
+    "macro environments, not forecast them."
+    "</div>",
+    unsafe_allow_html=True,
+)
 
 # ── Footer ─────────────────────────────────────────────────────────────────────
 st.markdown('<div class="divider"></div>', unsafe_allow_html=True)
